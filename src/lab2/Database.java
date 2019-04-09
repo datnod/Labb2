@@ -29,24 +29,12 @@ public class Database {
     }
 
     //Send latest move
-    public void sendMove(String move, String user){
-        String selectUser = "SELECT move FROM Labb2.table WHERE user = "+ user;
-        try(PreparedStatement preparedStatement = connect.prepareStatement(selectUser)) {
-            preparedStatement.setString(1, user);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            String latestMove = resultSet.getString("move");
+    public void sendMove(String move){
 
-            String sendMove = "UPDATE Labb2.User SET move = '"+ move +"' WHERE user = '" + user + "' ";
-            try (Statement prepared = connect.prepareStatement(sendMove)) {
-                if (!sendMove.equals(latestMove)) {
-                    prepared.executeUpdate(sendMove);
-                }else{
-                    System.out.println("Cannot send two moves in a row");
-                }
+        String sendMove = "UPDATE Labb2.User SET move = '"+ move +"'";
+        try (Statement prepared = connect.prepareStatement(sendMove)) {
+                prepared.executeUpdate(sendMove);
 
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         } catch (SQLException e){
             e.printStackTrace();
         }
@@ -54,11 +42,11 @@ public class Database {
     }
 
     //Get latest move
-    public String getMove(String user){
+    public String getMove(){
+
         String returnMove = null;
-        String getMove = "SELECT move, user FROM Labb2.User WHERE user = ?";
+        String getMove = "SELECT move FROM Labb2.User ";
         try(PreparedStatement preparedStmt = connect.prepareStatement(getMove)){
-            preparedStmt.setString(1, user);
             ResultSet resultSet = preparedStmt.executeQuery();
             returnMove = resultSet.getString("move");
             
