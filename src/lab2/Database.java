@@ -3,6 +3,7 @@ package lab2;
 import java.sql.*;
 
 public class Database {
+
     //Variables used for database connection
     private static Database db = null;
     private Connection connect = null;
@@ -28,14 +29,14 @@ public class Database {
     }
 
     //Send latest move
-    public void sendMove(String user, String move){
+    public void sendMove(String move, String user){
         String selectUser = "SELECT move FROM Labb2.table WHERE user = "+ user;
         try(PreparedStatement preparedStatement = connect.prepareStatement(selectUser)) {
             preparedStatement.setString(1, user);
             ResultSet resultSet = preparedStatement.executeQuery();
             String latestMove = resultSet.getString("move");
 
-            String sendMove = "UPDATE databe.table SET move WHERE user = '" + user + "' ";
+            String sendMove = "UPDATE Labb2.User SET move = '"+ move +"' WHERE user = '" + user + "' ";
             try (Statement prepared = connect.prepareStatement(sendMove)) {
                 if (!sendMove.equals(latestMove)) {
                     prepared.executeUpdate(sendMove);
@@ -55,7 +56,7 @@ public class Database {
     //Get latest move
     public String getMove(String user){
         String returnMove = null;
-        String getMove = "SELECT move, user FROM database.table WHERE user = ?";
+        String getMove = "SELECT move, user FROM Labb2.User WHERE user = ?";
         try(PreparedStatement preparedStmt = connect.prepareStatement(getMove)){
             preparedStmt.setString(1, user);
             ResultSet resultSet = preparedStmt.executeQuery();
