@@ -32,34 +32,31 @@ public class Database {
     }
 
     //Send latest move
+    public void sendMove(String move) {
 
-    public void sendMove(String move){
+        if (increment == 0){
 
-
-
-       if (increment==0){
-            String sendMove = "UPDATE Labb2.User SET move = '"+ move +"' WHERE playerID = '"+ increment + "'";
-            try (Statement prepared = connect.prepareStatement(sendMove)) {
-                prepared.executeUpdate(sendMove);
-
-            } catch (SQLException e){
+            String sendMove = "INSERT INTO Labb2.User (playerID, move)" + "VALUES (?,?)";
+            try (PreparedStatement prepared = connect.prepareStatement(sendMove)) {
+                prepared.setInt(1, increment);
+                prepared.setString(2, move);
+                prepared.execute();
+            } catch (SQLException e) {
                 e.printStackTrace();
             }
-       increment = 1;
-       }
-else if (increment==1){
-           String sendMove = "UPDATE Labb2.User SET move = '"+ move +"' WHERE playerID = '"+ increment + "'";
-           try (Statement prepared = connect.prepareStatement(sendMove)) {
-               prepared.executeUpdate(sendMove);
+            increment = 1;
 
-           } catch (SQLException e){
-               e.printStackTrace();
-           }
-           System.out.println(increment);
-
-           increment = 0;
-       }
-
+        }else if (increment == 1){
+            String sendMove = "INSERT INTO Labb2.User (playerID, move)" + "VALUES (?,?)";
+            try (PreparedStatement prepared = connect.prepareStatement(sendMove)) {
+                prepared.setInt(1, increment);
+                prepared.setString(2, move);
+                prepared.execute();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            increment = 0;
+        }
 
     }
 
@@ -70,16 +67,8 @@ else if (increment==1){
         String getMove = "SELECT move FROM labb2.user";
         try(PreparedStatement preparedStmt = connect.prepareStatement(getMove)){
             ResultSet resultSet = preparedStmt.executeQuery();
-            if (increment == 0) {
-                resultSet.next();
-                resultSet.next();
-                returnMove = resultSet.getString("move");
-            } else if (increment == 1){
-                resultSet.next();
-                returnMove = resultSet.getString("move");
-            }
-            
-
+            resultSet.last();
+            returnMove = resultSet.getString("move");
         }catch (SQLException e){
             e.printStackTrace();
         }
