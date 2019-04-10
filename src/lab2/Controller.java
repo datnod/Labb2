@@ -19,7 +19,9 @@ public class Controller {
     @FXML
     public void sendMove(){
         String move = sendField.getText();
-        db.sendMove(move);
+        if (!move.trim().isEmpty()){
+            db.sendMove(move);
+        }
         sendField.setText("");
     }
 
